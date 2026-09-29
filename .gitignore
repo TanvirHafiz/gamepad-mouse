@@ -2,3 +2,6 @@
 __pycache__/
 *.pyc
 mousepad_config.json
+build/
+dist/
+*.spec

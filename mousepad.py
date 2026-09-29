@@ -18,7 +18,8 @@ import pystray
 from PIL import Image, ImageDraw
 
 APP_NAME = "Gamepad Mouse"
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FROZEN = getattr(sys, "frozen", False)
+BASE_DIR = os.path.dirname(sys.executable if FROZEN else os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(BASE_DIR, "mousepad_config.json")
 
 DEFAULTS = {
@@ -437,14 +438,16 @@ def startup_script_path():
 
 
 def install_startup():
-    venv_dir = os.path.join(BASE_DIR, ".venv", "Scripts")
-    exe = os.path.join(venv_dir, "pythonw.exe")
-    if not os.path.exists(exe):
-        sys.exit("venv not found. Create it first: python -m venv .venv && "
-                 ".venv\\Scripts\\pip install -r requirements.txt")
-    script = os.path.abspath(__file__)
+    if FROZEN:
+        cmd = '""%s""' % sys.executable
+    else:
+        exe = os.path.join(BASE_DIR, ".venv", "Scripts", "pythonw.exe")
+        if not os.path.exists(exe):
+            sys.exit("venv not found. Create it first: python -m venv .venv && "
+                     ".venv\\Scripts\\pip install -r requirements.txt")
+        cmd = '""%s"" ""%s""' % (exe, os.path.abspath(__file__))
     with open(startup_script_path(), "w", encoding="utf-8") as f:
-        f.write('CreateObject("Wscript.Shell").Run """%s"" ""%s""", 0, False\n' % (exe, script))
+        f.write('CreateObject("Wscript.Shell").Run "%s", 0, False\n' % cmd)
     print("Installed startup entry:", startup_script_path())
 
 

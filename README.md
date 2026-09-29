@@ -22,7 +22,18 @@ Use an Xbox-style controller as a mouse on Windows. Runs in the system tray, sta
 
 The Xbox/Guide button can't be used; Windows reserves it.
 
-## Setup
+## Download (no Python needed)
+
+Grab `GamepadMouse.exe` from the [latest release](https://github.com/TanvirHafiz/gamepad-mouse/releases/latest) and run it. To start it with Windows / undo that:
+
+```bash
+GamepadMouse.exe --install-startup
+GamepadMouse.exe --uninstall-startup
+```
+
+The config file is created next to the exe. The exe is unsigned, so Windows SmartScreen or antivirus may warn about it; you can verify it against the SHA-256 in the release notes or build it yourself (below).
+
+## Run from source
 
 Requires Windows and Python 3.10+.
 
@@ -43,6 +54,15 @@ Start with Windows / remove that again:
 .venv\Scripts\python mousepad.py --install-startup
 .venv\Scripts\python mousepad.py --uninstall-startup
 ```
+
+## Build the exe
+
+```bash
+.venv\Scripts\pip install -r requirements-build.txt
+.venv\Scripts\python -m PyInstaller --onefile --noconsole --name GamepadMouse mousepad.py
+```
+
+The result is `dist\GamepadMouse.exe`.
 
 ## Tray icon
 
